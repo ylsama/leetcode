@@ -55,11 +55,19 @@ class Solution:
         # player can take 1, 2, or 3 stones from the first remaining stones in the row.
         # when there is one or no remaining stone, the optimal play are the only way taking all the remain stone
         end_game_round = [{"remaining_stone": remaining_stone} for remaining_stone in range(2)]
+
+        # Too long on caculating sum_stone_value using sum(stoneValue[n -i: n])
+        # So we implement this
+        # sum(stoneValue[n -i: n]) = sum_stone_value[n] -  sum_stone_value[n-i]
+        sum_stone_value = [0 for i in range(n+1)]
+        for i in range(1, n+1):
+            sum_stone_value[i] = sum_stone_value[i-1] + stoneValue[i-1]
+
         # Loop from 1 to 3: Handling first case that only < 3 remaining stone left
         # Case stoneValue.__len__() = n < 3, set a min value to n
         for i in range(0, 2):
             # The score of each player is the sum of the values of the stones taken
-            end_game_round[i] ["max_point"] = sum(stoneValue[n -i: n])
+            end_game_round[i] ["max_point"] = sum_stone_value[n] -  sum_stone_value[n-i]
             end_game_round[i]  = (end_game_round[i] ["remaining_stone"], end_game_round[i] ["max_point"]) 
 
         # Let use this infomation from the last round optimal play to find the first round optimal play
@@ -76,13 +84,13 @@ class Solution:
         for remaining_stone in range(2, n+1):
             max_point = -100000*3
             for next_round_remaining_stone in range(max(0, remaining_stone-3),remaining_stone):
-                if max_point <  sum(stoneValue[n - remaining_stone: n]) - optimal_play_point[next_round_remaining_stone]:
-                    max_point = sum(stoneValue[n - remaining_stone: n]) - optimal_play_point[next_round_remaining_stone]
+                if max_point <  sum_stone_value[n] -  sum_stone_value[n-remaining_stone] - optimal_play_point[next_round_remaining_stone]:
+                    max_point = sum_stone_value[n] -  sum_stone_value[n-remaining_stone] - optimal_play_point[next_round_remaining_stone]
             optimal_play_point[remaining_stone] = max_point
 
         # Alice playing first, so there is all
         Alice_point = optimal_play_point[n]
-        Bob_point = sum(stoneValue[0: n]) - Alice_point
+        Bob_point = sum_stone_value[n] -  sum_stone_value[0] - Alice_point
         if Alice_point == Bob_point:
             game_result = "Tie"
         elif Alice_point > Bob_point:
