@@ -62,26 +62,22 @@ class Solution:
 
         index_with_height = [(height[i], i) for i in range(n)]
         index_with_height.sort()
-        index_sorted_by_height = [index for _, index in index_with_height]
-
-        max_index_table = [-1 for i in range(n)] 
-        min_index_table = [-1 for i in range(n)] 
-        max_index = index_sorted_by_height[n-1]
-        min_index = index_sorted_by_height[n-1]
-        for i in range(n-2, -1, -1):
-            max_index_table[i] = max_index
-            min_index_table[i] = min_index
-            if max_index < index_sorted_by_height[i]:
-                max_index = index_sorted_by_height[i]
-            if min_index > index_sorted_by_height[i]:
-                min_index = index_sorted_by_height[i]
 
         max_containner = 0
+        max_index = index_with_height[n-1][1]
+        min_index = index_with_height[n-1][1]
         for i in range(n-2, -1, -1):
-            if max_containner < abs(max_index_table[i] - index_sorted_by_height[i]) * height[index_sorted_by_height[i]]:
-                max_containner = abs(max_index_table[i] - index_sorted_by_height[i]) * height[index_sorted_by_height[i]]
-            if max_containner < abs(min_index_table[i] - index_sorted_by_height[i]) * height[index_sorted_by_height[i]]:
-                max_containner = abs(min_index_table[i] - index_sorted_by_height[i]) * height[index_sorted_by_height[i]]
+            vertical_line_1, current_vl_1_index = index_with_height[i]
+            if max_containner < abs(max_index - current_vl_1_index) * vertical_line_1:
+                max_containner = abs(max_index - current_vl_1_index) * vertical_line_1
+            if max_containner <  abs(min_index - current_vl_1_index) * vertical_line_1:
+                max_containner = abs(min_index - current_vl_1_index) * vertical_line_1
+
+            if max_index < current_vl_1_index:
+                max_index = current_vl_1_index
+            if min_index > current_vl_1_index:
+                min_index = current_vl_1_index
+
         return max_containner
 
 if __name__ == "__main__":
