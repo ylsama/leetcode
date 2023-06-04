@@ -16,6 +16,7 @@ Solution: This just a graph problem, where you try to seperate graph into distin
 Simple way is to use a dfs/bfs to search through all the node. Total time we have to manualy call dfs/bfs until all node is visited is the result
 """
 from random import randint
+from typing import List
 
 class Solution:
     def findAdjNode(self, currentVisitedNode):
