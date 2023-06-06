@@ -48,6 +48,9 @@ class Solution:
                 resultGroupAnagrams[currentCraftedHash] = []
             resultGroupAnagrams[currentCraftedHash].append(currentString)
             
+            # This is the same as using sortedString insead of our craftedHash
+            # resultGroupAnagrams[self.sortedString(currentString)].append(currentString)
+
         resultGroupAnagramsToList = [resultGroupAnagrams[i] for i in resultGroupAnagrams]
         return resultGroupAnagramsToList
     
