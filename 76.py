@@ -7,6 +7,15 @@ included in the window. If there is no such substring, return the empty string
 "".
 
 The testcases will be generated such that the answer is unique.
+
+
+Just some counting and check if t is in the nums range(left, right) or not
+if true update the result if left..right has smaller range
+
+- precaculate count_array so that i can quickly count any nums(left, right)
+
+- Update left every time while moving right pointer from 1 to nums
+  try to find the best left pointer each time
 """
 
 
