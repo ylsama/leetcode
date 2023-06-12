@@ -32,33 +32,39 @@ class Solution:
 
     3. To end the loop: Ether we can't find standingPoint, or jumpEndPoint == beginIndex == 0
     """
+    def findPossibleJumpingPoint(self, landedJumpIndex, possibleJumpLengthArray):
+        isFound = False
+        jumpingPointIndex = None
+        
+        for jumpingPointIndex in range(landedJumpIndex-1, -1, -1):
+            neededJumpLength = landedJumpIndex - jumpingPointIndex
+            possibleJumpLengh = possibleJumpLengthArray[jumpingPointIndex]
+
+            if possibleJumpLengh >= neededJumpLength:
+                isFound = True
+                break
+        return (jumpingPointIndex, isFound)
+    
     def canJump(self, nums: List[int]) -> bool:
         checkCanJump = True
         
         lastIndex = len(nums) - 1
-        startingPoint = 0
-        canBeSkip = [False]* len(nums)
-        
-        for jumpEndPoint in range(lastIndex, 0, -1):
-            if jumpEndPoint == startingPoint:
+        beginIndex = 0
+        jumpEndPoint = lastIndex
+
+        MAX_LOOP = len(nums)
+        for i in range(MAX_LOOP):
+            if jumpEndPoint == beginIndex:
                 break
 
-            if canBeSkip[jumpEndPoint]:
-                continue
+            standingPoint, isFound = self.findPossibleJumpingPoint(jumpEndPoint, nums)
                 
-            neededJumpLength = 1
-            
-            standingPoint = jumpEndPoint
-            
-            for standingPoint in range(jumpEndPoint-1, -1, -1):
-                if nums[standingPoint] >= neededJumpLength:
-                    break
-                neededJumpLength += 1
-                canBeSkip[jumpEndPoint] = True
-                
-            if nums[standingPoint] < neededJumpLength:
+            if not isFound:
                 checkCanJump = False
                 break
+
+            jumpEndPoint = standingPoint
+            
         
         return checkCanJump 
     
