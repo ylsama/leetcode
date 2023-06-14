@@ -38,14 +38,17 @@ class Test:
             out = func(*testCase.input)
             print(f"Test {testCase.toString()} is {out == testCase.output}")
 
-    def quickTest(self, func, testInput, testOutput, testName = None, addTest = True):
+    def quickTest(self, func, testInput, testOutput, testName = None, addTest = True, showInputLength = 20):
         if addTest:
             self.addTest(testInput, testOutput, testName)
         
         if not testName:
             testName = "quickTest"
         out = func(*testInput)
-        print(f"Test {testName} is {out == testOutput}")
+        if out != testOutput:
+            print(f"Test {testName}, func: \"{func.__name__}\", input: \"{str(testInput)}...\" is {out == testOutput}")
+        else:
+            print(f"Test {testName}, func: \"{func.__name__}\", input: \"{str(testInput)[:showInputLength]}...\" is {out == testOutput}")
 
     def quickTestCase(self, func, testCase: TestCase, addTestCase = True):
         if addTestCase:
