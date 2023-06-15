@@ -19,7 +19,7 @@ class TestCase:
             return self.name
         return self.id
 
-class Test:
+class TestHelper:
     def __init__(self):
         self.testSet = []
     
@@ -61,7 +61,7 @@ class Test:
 def main():
     def add(x,y):
         return x+y
-    test = Test()
+    test = TestHelper()
     test.addTest((1,1),2, "Example 1")
     test.addTest((1,2),3, "Example 2")
     test.addTest((21,2),23, "Example 3")

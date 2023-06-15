@@ -1,5 +1,5 @@
 
-from ulti.testHelper.testHelper import Test
+from ulti.testHelper.testHelper import TestHelper
 from math import trunc, log
 from typing import List
 
@@ -108,7 +108,7 @@ class Solution:
 def main():
     a = Solution()
     board = [["A", "B", "C"]]
-    test = Test()
+    test = TestHelper()
     test.quickTest(a.isPathConnected, ([(0, 1)], [(0, 2)]), True)
     test.quickTest(a.isPathConnected, ([(0, 1)], [(0, -2)]), False)
     test.quickTest(a.isPathConnected, ([(0, 1)], [(1, 2)]), False)
