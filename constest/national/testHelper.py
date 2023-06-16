@@ -1,5 +1,6 @@
 import uuid
-
+import time
+from math import trunc 
 
 class TestCase:
     def __init__(self, testInput, testOutput, testName : str = None, id = None):
@@ -38,19 +39,29 @@ class TestHelper:
             out = func(*testCase.input)
             print(f"Test {testCase.toString()} is {out == testCase.output}")
 
+    def getRunTime(self, functionCall):
+        start = time.time()
+        functionCall
+        end = time.time()
+        return end - start 
+    
     def quickTest(self, func, testInput, testOutput, testName = None, addTest = False, showInputLength = 20):
         if addTest:
             self.addTest(testInput, testOutput, testName)
         
         if not testName:
             testName = "quickTest"
+        
+        start = time.time()
         out = func(*testInput)
+        end = time.time()
+
         if out != testOutput:
-            print(f"Test {testName}, func: \"{func.__name__}\", input: \"{str(testInput)[:showInputLength*4]}\" is {out == testOutput}")
+            print(f"Test {testName}, func: \"{func.__name__}\", input: \"{str(testInput)[:showInputLength*4]}\" is {out == testOutput}, Running time = {trunc((end - start)*1000000) / 1000.} ms")
             # Rerun
-            func(*testInput)
+            # func(*testInput)
         else:
-            print(f"Test {testName}, func: \"{func.__name__}\", input: \"{str(testInput)[:showInputLength]}\" is {out == testOutput}")
+            print(f"Test {testName}, func: \"{func.__name__}\", input: \"{str(testInput)[:showInputLength]}\" is {out == testOutput}, Running time = {trunc((end - start)*1000000) / 1000.} ms")
 
 
     def quickTestCase(self, func, testCase: TestCase, addTestCase = True):
