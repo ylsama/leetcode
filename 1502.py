@@ -28,6 +28,51 @@ class Solution:
             lastNumber = num
         return True
     
+    """
+    Second appoarch:
+        A rearranged to form an arithmetic progression, is basically a sort process
+        Here we try to find the diffent of each number:
+            1. Find two lowest value number
+                lowest_pos1 = min(arr, pos=0)
+                lowest_pos2 = min(arr, pos=1)
+            2. and caculate
+                baseDifferences = lowest_pos2 - lowest_pos1
+            This could be done using one search round O(n)
+        After that, all the given value of the arithmetic progression array sould be calculated like this:
+            item_index(i) == lowest_pos1 + baseDifferences*(i)
+
+        We check if any item:
+            1. isn't match this rule:
+                    item_index(i) == lowest_pos1 + baseDifferences*(i)
+            2. having value >  lowest_pos1 + baseDifferences*(len(arr)-1)
+            3. is doubelicated
+            then result is False
+        else: return True
+        
+    """
+    def canMakeArithmeticProgressionHardMode(self, arr: List[int]) -> bool:
+        arr.sort()
+        lastNumber = None
+        # findMin
+        lowest_pos1 = None
+        lowest_pos2 = None
+        for num in arr:
+            if lowest_pos1 == None:
+                lowest_pos1 = num
+            elif lowest_pos1 >  num:
+                lowest_pos2 = lowest_pos1
+                lowest_pos1 = num
+
+        baseDifferences = lowest_pos2 - lowest_pos1
+        isIndexFound = [False]*(len(arr))
+        for num in arr:
+            if (num - lowest_pos1) % baseDifferences == 0:
+                return False
+            if num >  lowest_pos1 + baseDifferences*(len(arr)-1):
+                return False
+            if isIndexFound[(num - lowest_pos1) //baseDifferences)] 
+        return True
+
     
 def test():
     a = Solution()
