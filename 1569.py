@@ -1,4 +1,3 @@
-import json
 from typing import List
 
 from ulti.testHelper.testHelper import TestHelper
@@ -30,35 +29,6 @@ class BinarySearchTree:
                 self.left.addNode(value)
         
         self.totalNode += 1
-
-    def toDict(self, nestedlevel = None):
-        nextNestedLevel = nestedlevel
-        if nestedlevel != None:
-            nextNestedLevel = nestedlevel - 1
-            if nextNestedLevel < 0:
-                return "..."
-            
-        dictSeft = {}
-        dictSeft["value"] = self.value
-        if self.left != None:
-            dictSeft["left"] = self.left.toDict(nextNestedLevel)
-        if self.right != None:
-            dictSeft["right"] = self.right.toDict(nextNestedLevel)
-        return dictSeft
-
-    def toString(self, nestedlevel = None, indent = 4):
-        dictSeft = self.toDict(nestedlevel)
-        stringSeft = json.dumps(dictSeft, indent = indent)
-        return stringSeft
-
-    def interator(self): 
-        nodes = []
-        nodes.append(self)
-        if self.left != None:
-            nodes.append(*self.left.interator())
-        if self.right != None:
-            nodes.append(*self.right.interator())
-        return nodes
 
     def countWays(self, dp, modulo):
         if self.countWayCache != None:
@@ -98,9 +68,7 @@ class Solution:
 
 def test():
     a = Solution()
-
     test = TestHelper()
-
     test.quickTest(a.numOfWays, [[2,1,3]], 1, "Example 1")
     test.quickTest(a.numOfWays, [[3,4,5,1,2]], 5, "Example 2")
     test.quickTest(a.numOfWays, [[1,2,3]], 0, "Example 3")
