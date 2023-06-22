@@ -1,3 +1,6 @@
+from typing import List
+
+
 class Solution:
     def toRange(self, left, right):
         if left == right:

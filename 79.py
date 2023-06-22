@@ -1,4 +1,3 @@
-
 from ulti.testHelper.testHelper import TestHelper
 from math import trunc, log
 from typing import List
