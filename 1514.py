@@ -11,7 +11,7 @@ class Solution:
                 continue
             if currBestNode == -1:
                 currBestNode = node
-            elif maxProb[start][node] > maxProb[start][currBestNode]:
+            elif maxProb[node] > maxProb[currBestNode]:
                 currBestNode = node
 
         return currBestNode
@@ -22,14 +22,25 @@ class Solution:
                        succProb: List[float],
                        start: int,
                        end: int) -> float:
+        def manualHash(u, v):
+            if u < v:
+                return (u, v).__hash__()
+            return (v, u).__hash__()
+
         result = 0.
-        maxProbability = [[0] * n for i in range(n)]
+        quickRef = {}
+        maxProbability = [0] * n
+        maxProbability[start] = 1
 
         for index, e in enumerate(edges):
             u, v, successProbility = e[0], e[1], succProb[index]
-            maxProbability[u][v] = maxProbability[v][u] = successProbility
-        trace = set()
+            quickRef[manualHash(u, v)] = successProbility
+            if u == start:
+                maxProbability[v] = successProbility
+            if v == start:
+                maxProbability[u] = successProbility
 
+        trace = set()
         for _ in range(n):
             bestPosbilityNode = self.findMaxProabilityNode(trace,
                                                            n,
@@ -37,17 +48,20 @@ class Solution:
                                                            maxProbability)
             if bestPosbilityNode == end:
                 break
-            if maxProbability[start][bestPosbilityNode] == 0:
+            if maxProbability[bestPosbilityNode] == 0:
                 break
+
             trace.add(bestPosbilityNode)
             for node in range(n):
-                currMax = maxProbability[start][node]
-                usingBestPNProb = maxProbability[start][bestPosbilityNode] * \
-                    maxProbability[bestPosbilityNode][node]
+                if manualHash(bestPosbilityNode, node) not in quickRef:
+                    continue
+                currMax = maxProbability[node]
+                usingBestPNProb = maxProbability[bestPosbilityNode] * \
+                    quickRef[manualHash(bestPosbilityNode, node)]
                 if currMax < usingBestPNProb:
-                    maxProbability[start][node] = usingBestPNProb
+                    maxProbability[node] = usingBestPNProb
 
-        result = maxProbability[start][end]
+        result = maxProbability[end]
         return result
 
 
