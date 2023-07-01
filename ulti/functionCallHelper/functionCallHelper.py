@@ -1,13 +1,14 @@
 import json
 
+
 class FunctionCallHandler:
     def __init__(self, functionClassInstance, inputFilePath, outputFilePath):
-        f = open(inputFilePath,'r')
+        f = open(inputFilePath, 'r')
         data = f.read().split('\n')
         f.close()
         self.functionCalls = json.loads(data[0])
         self.functionCallsInput = json.loads(data[1])
-        f2 = open(outputFilePath,'r')
+        f2 = open(outputFilePath, 'r')
         data = f2.read().split('\n')
         f2.close()
         self.functionCallsResult = json.loads(data[0])
@@ -20,8 +21,8 @@ class FunctionCallHandler:
             funcInput = self.functionCallsInput[i]
             out.append(self.instance.__call__(funcName, funcInput))
         return out
-    
-    def simulatedAndCompare(self, verbose = False):
+
+    def simulatedAndCompare(self, verbose=False):
         for i in range(len(self.functionCalls)):
             funcName = self.functionCalls[i]
             funcInput = self.functionCallsInput[i]
@@ -31,10 +32,12 @@ class FunctionCallHandler:
                 # checkAgain
                 self.instance.__call__(funcName, funcInput)
                 if verbose:
-                    print(f"Step {i} fail, function {funcName} with input {funcInput} return {out} instead of {result}")
+                    print(
+                        f"Step {i} fail, function {funcName} with input {funcInput} return {out} instead of {result}")
                 break
         if verbose:
             print("Simulated done")
+
 
 class LazyCallable(object):
     def __init__(self, m_class):
@@ -45,19 +48,19 @@ class LazyCallable(object):
         if self.m_class.__name__ == name:
             self.m_object = self.m_class(*k)
             return None
-        
+
         function = getattr(self.m_object, name)
         return function(*k)
-    
+
+
 if __name__ == "__main__":
     class Solution:
-        def __init__(self,name = None):
+        def __init__(self, name=None):
             self.name = name
 
-        def add(self, x,y):
+        def add(self, x, y):
             return x + y
-    
-    fc = FunctionCallHandler(Solution, "ulti/functionCallHelper/test.inp", "ulti/functionCallHelper/test.out")
-    fc.simulatedAndCompare(verbose = True)
-    
 
+    fc = FunctionCallHandler(
+        Solution, "test.inp", "test.out")
+    fc.simulatedAndCompare(verbose=True)
