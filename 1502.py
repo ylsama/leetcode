@@ -15,6 +15,7 @@ class Solution:
         A rearranged to form an arithmetic progression, is basically a sort process
         Here we using sort and check the diffent of each number to be equal
     """
+
     def canMakeArithmeticProgression(self, arr: List[int]) -> bool:
         arr.sort()
         lastNumber = None
@@ -27,7 +28,7 @@ class Solution:
                 return False
             lastNumber = num
         return True
-    
+
     """
     Second appoarch:
         A rearranged to form an arithmetic progression, is basically a sort process
@@ -48,8 +49,9 @@ class Solution:
             3. is doubelicated
             then result is False
         else: return True
-        
+
     """
+
     def canMakeArithmeticProgressionHardMode(self, arr: List[int]) -> bool:
         arr.sort()
         lastNumber = None
@@ -59,7 +61,7 @@ class Solution:
         for num in arr:
             if lowest_pos1 == None:
                 lowest_pos1 = num
-            elif lowest_pos1 >  num:
+            elif lowest_pos1 > num:
                 lowest_pos2 = lowest_pos1
                 lowest_pos1 = num
 
@@ -68,29 +70,29 @@ class Solution:
         for num in arr:
             if (num - lowest_pos1) % baseDifferences == 0:
                 return False
-            if num >  lowest_pos1 + baseDifferences*(len(arr)-1):
+            if num > lowest_pos1 + baseDifferences*(len(arr)-1):
                 return False
-            if isIndexFound[(num - lowest_pos1) //baseDifferences)] 
+            if isIndexFound[(num - lowest_pos1) // baseDifferences)]
         return True
 
-    
+
 def test():
-    a = Solution()
+    a=Solution()
     # Example 1:
-    arr = [3,5,1]
-    result = True
-    out = a.canMakeArithmeticProgression(arr)
+    arr=[3, 5, 1]
+    result=True
+    out=a.canMakeArithmeticProgression(arr)
     print("Test 1 is", result == out)
     # Example 2:
-    arr = [3,5,1]
-    result = True
-    out = a.canMakeArithmeticProgression(arr)
+    arr=[3, 5, 1]
+    result=True
+    out=a.canMakeArithmeticProgression(arr)
     print("Test 2 is", result == out)
     # Example 3:_main__":
-    arr = [randint(-10**6, 10**6) for i in range(1000)]
-    out = a.canMakeArithmeticProgression(arr)
+    arr=[randint(-10**6, 10**6) for i in range(1000)]
+    out=a.canMakeArithmeticProgression(arr)
     print("Test time limit is OK")
-    
-    
-# if __name__ == "__main__":
-#     test() 
+
+
+if __name__ == "__main__":
+    test()

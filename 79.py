@@ -92,8 +92,9 @@ class Solution:
                 str1FoundedPath = allFoundPath[str1]
                 str2FoundedPath = allFoundPath[str2]
                 allFoundPath[newCombinedString] =\
-                    self.findValidCombinedPath(str1FoundedPath, str2FoundedPath)
-                
+                    self.findValidCombinedPath(
+                        str1FoundedPath, str2FoundedPath)
+
                 if len(allFoundPath[newCombinedString]) == 0:
                     return False
 

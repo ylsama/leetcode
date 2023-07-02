@@ -50,7 +50,7 @@ class Solution:
         #           of index bettween two container.
         #           max_container = vl_1 * max[abs(index(vl_1) - index(vl_2) for each vl_2 > vl_1)]
         #
-        # and the problem become find max 
+        # and the problem become find max
         #               abs(index(vl_1) - index(vl_2) for each vl_2 > vl_1)
         #
         # So, the first thing we could do is sort the provided vertical lines. which cost us O(n logn)
@@ -69,9 +69,11 @@ class Solution:
         for i in range(n-2, -1, -1):
             vertical_line_1, current_vl_1_index = index_with_height[i]
             if max_containner < abs(max_index - current_vl_1_index) * vertical_line_1:
-                max_containner = abs(max_index - current_vl_1_index) * vertical_line_1
-            if max_containner <  abs(min_index - current_vl_1_index) * vertical_line_1:
-                max_containner = abs(min_index - current_vl_1_index) * vertical_line_1
+                max_containner = abs(
+                    max_index - current_vl_1_index) * vertical_line_1
+            if max_containner < abs(min_index - current_vl_1_index) * vertical_line_1:
+                max_containner = abs(
+                    min_index - current_vl_1_index) * vertical_line_1
 
             if max_index < current_vl_1_index:
                 max_index = current_vl_1_index
@@ -80,11 +82,12 @@ class Solution:
 
         return max_containner
 
+
 if __name__ == "__main__":
     a = Solution()
-    result = a.maxArea(height = [1,8,6,2,5,4,8,3,7])
+    result = a.maxArea(height=[1, 8, 6, 2, 5, 4, 8, 3, 7])
     print("Test 1 is ", result == 49)
-    result = a.maxArea(height = [1,1])
+    result = a.maxArea(height=[1, 1])
     print("Test 2 is ", result == 1)
-    result = a.maxArea(height = [random.randint(0, 10**4) for i in range(10**5)])
-    print("Test time-limit is OK") 
+    result = a.maxArea(height=[random.randint(0, 10**4) for i in range(10**5)])
+    print("Test time-limit is OK")

@@ -1,65 +1,64 @@
 from typing import List
+import heapq
 from ulti.testHelper.testHelper import TestHelper
 
 
 class Solution:
-    def findMaxProabilityNode(self, trace, n, start, maxProb):
-        currBestNode = -1
-
-        for node in range(n):
-            if node == start or node in trace:
-                continue
-            if currBestNode == -1:
-                currBestNode = node
-            elif maxProb[node] > maxProb[currBestNode]:
-                currBestNode = node
-
-        return currBestNode
-
     def maxProbability(self,
                        n: int,
                        edges: List[List[int]],
                        succProb: List[float],
                        start: int,
                        end: int) -> float:
-        def manualHash(u, v):
-            if u < v:
-                return (u, v).__hash__()
-            return (v, u).__hash__()
-
         result = 0.
-        quickRef = {}
+        adjTable = {}
+        updated = []
         maxProbability = [0] * n
         maxProbability[start] = 1
 
         for index, e in enumerate(edges):
             u, v, successProbility = e[0], e[1], succProb[index]
-            quickRef[manualHash(u, v)] = successProbility
+            if u not in adjTable:
+                adjTable[u] = []
+            if v not in adjTable:
+                adjTable[v] = []
+
+            adjTable[u].append((v, successProbility))
+            adjTable[v].append((u, successProbility))
+
             if u == start:
                 maxProbability[v] = successProbility
+                heapq.heappush(updated, (- successProbility, v))
             if v == start:
                 maxProbability[u] = successProbility
+                heapq.heappush(updated, (- successProbility, u))
 
-        trace = set()
+        trace = set([start])
         for _ in range(n):
-            bestPosbilityNode = self.findMaxProabilityNode(trace,
-                                                           n,
-                                                           start,
-                                                           maxProbability)
+            while len(updated) > 0:
+                if updated[0][1] in trace:
+                    heapq.heappop(updated)
+                else:
+                    break
+            if len(updated) == 0:
+                break
+
+            successProbility, bestPosbilityNode = heapq.heappop(updated)
+            successProbility = 0 - successProbility
             if bestPosbilityNode == end:
                 break
             if maxProbability[bestPosbilityNode] == 0:
                 break
 
             trace.add(bestPosbilityNode)
-            for node in range(n):
-                if manualHash(bestPosbilityNode, node) not in quickRef:
-                    continue
-                currMax = maxProbability[node]
-                usingBestPNProb = maxProbability[bestPosbilityNode] * \
-                    quickRef[manualHash(bestPosbilityNode, node)]
-                if currMax < usingBestPNProb:
+            if bestPosbilityNode not in adjTable:
+                continue
+            for node, prob in adjTable[bestPosbilityNode]:
+                currentBestProb = maxProbability[node]
+                usingBestPNProb = successProbility * prob
+                if currentBestProb < usingBestPNProb:
                     maxProbability[node] = usingBestPNProb
+                    heapq.heappush(updated, (-usingBestPNProb, node))
 
         result = maxProbability[end]
         return result
@@ -107,6 +106,22 @@ def test():
                               4],
                    testOutput=0.21390,
                    comparefunc=compare)
+
+    test.quickTest(func=a.maxProbability,
+                   testInput=[5,
+                              [[2, 3], [1, 2], [3, 4], [1, 3], [1, 4],
+                                  [0, 1], [2, 4], [0, 4], [0, 2]],
+                              [0.06, 0.26, 0.49, 0.25, 0.2,
+                                  0.64, 0.23, 0.21, 0.77],
+                              0,
+                              3],
+                   testOutput=0.16000,
+                   comparefunc=compare)
+
+    test.fileTest(func=a.maxProbability,
+                  testFileInput="test/1514/1.inp",
+                  testFileOutput="test/1514/1.out",
+                  comparefunc=compare)
 
 
 if __name__ == "__main__":
