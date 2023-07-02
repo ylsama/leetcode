@@ -2,34 +2,11 @@ from typing import List
 from ulti.testHelper.testHelper import TestHelper
 
 
-class DSU:
-    def __init__(self, n):
-        self.root = list(range(n))
-        self.size = [1] * n
-
-    def find(self, x):
-        if self.root[x] != x:
-            self.root[x] = self.find(self.root[x])
-        return self.root[x]
-
-    def union(self, x, y):
-        root_x = self.find(x)
-        root_y = self.find(y)
-        if root_x == root_y:
-            return
-
-        if self.size[root_x] > self.size[root_y]:
-            root_x, root_y = root_y, root_x
-        self.root[root_x] = root_y
-        self.size[root_y] += self.size[root_x]
-
-
 class ForestNode:
     def __init__(self, id):
         self.id = id
         self.parent = self
         self.size = 1
-        self.rank = 0
 
     def find(self):
         if self.parent != self:
@@ -37,88 +14,34 @@ class ForestNode:
             return self.parent
         else:
             return self
-    
-    def toString(self):
-        x = self
-        arr = []
-        while x.parent != x:
-            arr.append(x.parent.id)
-            x = x.parent
-        return arr
-    
-    def findConstantMemory(self):
-        root = self
-        while root.parent != root:
-            root = root.parent
 
-        x = self
-        while x.parent != root:
-            parent = x.parent
-            x.parent = root
-            x = parent
-
-        return root
-    
-    def findWithPathSplitting(self):
-        x = self
-        while x.parent != x:
-            x, x.parent = x.parent, x.parent.parent
-        return x
-    
-    def findWithPathHalving(self):
-        x = self
-        while x.parent != x:
-            x.parent = x.parent.parent
-            x = x.parent
-        return x
-    
     def union(self, newForestNode):
         x = self.find()
         y = newForestNode.find()
         if x == y:
             return
-    
+
         if x.size < y.size:
             x, y = y, x
 
         y.parent = x
         x.size = x.size + y.size
-    
-    def unionByRank(self, newForestNode):
-        x = self.find()
-        y = newForestNode.find()
-        if x == y:
-            return
-    
-        if x.rank < y.rank:
-            x, y = y, x
 
-        y.parent = x
-        if x.rank == y.rank:
-            x.rank = x.rank + 1
-            
+
 class disjointSetForest:
     def __init__(self, ):
         self.forest = {}
 
     def makeSet(self, x):
         if x not in self.forest:
-            self.forest[x] =  ForestNode(x)
+            self.forest[x] = ForestNode(x)
 
     def union(self, x, y):
         self.forest[x].union(self.forest[y])
 
     def find(self, x):
         return self.forest[x].find()
-        
-    def getAllNodeRoot(self):
-        return [self.forest[x].find().id for x in self.forest]
-    
-    def toString(self):
-        dict = {}
-        for x in self.forest:
-            dict[x] = self.forest[x].toString()
-        return dict
+
 
 class Solution:
     def isValid(self, x, y, row, col):
