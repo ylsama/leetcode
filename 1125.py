@@ -1,51 +1,68 @@
 from typing import List
+from bisect import bisect_right
 from ulti.testHelper.testHelper import TestHelper
 
 
 class Solution:
-    def find_rarest_skill(self, candidates, skill_set, not_needed_skill):
-        skill_talent = {}
-        for candidate in candidates:
-            for skill in skill_set[candidate]:
-                if skill not in skill_talent:
-                    skill_talent[skill] = []
-                skill_talent[skill].append(candidate)
+    def bit_1_pos(self, number):
+        for pos, c in enumerate(bin(number)[2:][::-1]):
+            if c == '1':
+                yield pos
 
-        rarest_skill = None
+    def needed_skill(self, number):
+        tmp = number
+        pos = 0
+        while tmp != 0:
+            if tmp % 2 == 1:
+                tmp = tmp // 2
+                pos += 1
+            else:
+                break
 
-        for skill in skill_talent:
-            if skill in not_needed_skill:
-                continue
-            if rarest_skill is None:
-                rarest_skill = skill
-            elif len(skill_talent[rarest_skill]) > len(skill_talent[skill]):
-                rarest_skill = skill
-
-        return rarest_skill, set(skill_talent[rarest_skill])
+        return pos
 
     def smallestSufficientTeam(self, req_skills: List[str],
                                people: List[List[str]]) -> List[int]:
-        queue = [(set(range(len(people))), set())]
-        while queue:
-            available_people, current_team_skill = queue.pop(0)
-            if available_people is None:
-                return [i for i in len(people)]
-            if len(current_team_skill) == len(req_skills):
-                return list(set(range(len(people))).difference(available_people))
+        words_dictinary = req_skills.copy()
+        words_dictinary.sort()
+        number_representation = []
+        for p in people:
+            craft_number = 0
+            for skill in p:
+                words_index = bisect_right(words_dictinary, skill) - 1
+                craft_number += 1 << words_index
+            number_representation.append(craft_number)
 
-            _, talented_peoples = self.find_rarest_skill(
-                available_people, people, current_team_skill)
+        start = 0
+        last = (1 << len(people)) - 1
 
-            for candidate in talented_peoples:
-                team_skill = current_team_skill.union(set(people[candidate]))
-                remain_people = available_people.copy()
-                remain_people.remove(candidate)
-                queue.append((remain_people, team_skill))
-                if len(team_skill) == len(req_skills):
-                    queue = [queue[-1]]
-                    break
+        best = last
+        queue = [(start, 0)]
+        visited = set()
+        while len(queue) > 0:
+            possible_combination, is_sufficient = queue.pop(0)
+            visited.add(possible_combination)
+            if possible_combination.bit_count() > best.bit_count():
+                continue
 
-        return [i for i in len(people)]
+            if is_sufficient.bit_count() == len(words_dictinary):
+                best = possible_combination
+                break
+
+            needed_skill = self.needed_skill(is_sufficient)
+            for index in range(len(people)):
+                if (number_representation[index] >> needed_skill) % 2 == 0:
+                    continue
+                team_skill = is_sufficient | number_representation[index]
+                if team_skill == is_sufficient:
+                    continue
+                team_member = possible_combination | (1 << index)
+                if team_member in visited:
+                    continue
+                visited.add(team_member)
+                queue.append((team_member, team_skill))
+
+        return [i for i in self.bit_1_pos(best)]
 
 
 def test():
