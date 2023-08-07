@@ -1,0 +1,27 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "rust",
+            "request": "launch",
+            "name": "launch.json",
+            "program": "target/debug/selotejp",
+            "cwd": "${workspaceFolder}",
+            "stopOnEntry": true
+        },
+        {
+            "type": "rust",
+            "request": "launch",
+            "name": "Debug Rust",
+            "program": "${workspaceFolder}/target/debug/${workspaceFolderBasename}",
+            "cwd": "${workspaceFolder}",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--manifest-path",
+                    "${fileDirname}/../Cargo.toml"
+                ]
+            }
+        }
+    ]
+}

@@ -13,150 +13,126 @@ Bang dinh dan doc | hoac dan ngang --- co the noi dai den o ke tiep
 
 Example result: 4
 """
-from typing import List
-
-
-def solution_old(n: int, m: int, a: List[str], isVertical=None, cache=None):
-    if cache is None:
-        cache = {}
-        n = n - 1
-        m = m - 1
-
-    if isVertical is not None:
-        if (n, m, isVertical) in cache:
-            return cache[(n, m, isVertical)]
-
-    if n == -1:
-        return 0
-
-    if n == 0 and m == 0:
-        if a[n][m] == '.':
-            return 0
-        else:
-            return 1
-
-    if n == 0:
-        possible = []
-        if a[n][m] == ".":
-            possible.append(solution(n, m-1, a, True, cache))
-            possible.append(solution(n, m-1, a, False, cache))
-
-            cache[(n, m, True)] = cache[(n, m, False)] = min(possible)
-            return cache[(n, m, True)]
-
-        possible = []
-        if a[n][m-1] == '.':
-            possible += [solution(n, m-1, a, False, cache) + 1]
-            possible += [solution(n, m-1, a, True, cache) + 1]
-        else:
-            possible += [solution(n, m-1, a, False, cache)]
-            possible += [solution(n, m-1, a, True, cache) + 1]
-        cache[(n, m, False)] = min(possible)
-
-        possible = []
-        possible += [solution(n, m-1, a, False, cache) + 1]
-        possible += [solution(n, m-1, a, True, cache) + 1]
-        cache[(n, m, True)] = min(possible)
-
-    if n > 0 and m == 0:
-        possible = []
-        if a[n][m] == ".":
-            possible += [solution(n-1, m, a, False, cache)]
-            possible += [solution(n-1, m, a, True, cache)]
-
-            cache[(n, m, True)] = cache[(n, m, False)] = min(possible)
-            return cache[(n, m, True)]
-
-        possible = []
-        possible += [solution(n-1, m, a, False, cache) + 1]
-        possible += [solution(n-1, m, a, True, cache) + 1]
-        cache[(n, m, False)] = min(possible)
-
-        possible = []
-        if a[n-1][m] == '.':
-            possible += [solution(n-1, m, a, False, cache) + 1]
-            possible += [solution(n-1, m, a, True, cache) + 1]
-        else:
-            possible += [solution(n-1, m, a, False, cache) + 1]
-            possible += [solution(n-1, m, a, True, cache)]
-        cache[(n, m, True)] = min(possible)
-
-    if n > 0 and m > 0:
-        possible = []
-        if a[n][m] == ".":
-            possible += [solution(n, m-1, a, False, cache)]
-            possible += [solution(n, m-1, a, True, cache)]
-            possible += [solution(n-1, m, a, False, cache)]
-            possible += [solution(n-1, m, a, True, cache)]
-            cache[(n, m, True)] = cache[(n, m, False)] = min(possible)
-            return cache[(n, m, True)]
-
-        possible = []
-        if a[n-1][m] == '.':
-            possible += [solution(n-1, m, a, False, cache) + 1]
-            possible += [solution(n-1, m, a, True, cache) + 1]
-        else:
-            possible += [solution(n-1, m, a, False, cache) + 1]
-            possible += [solution(n-1, m, a, True, cache)]
-        cache[(n, m, True)] = min(possible)
-
-        possible = []
-        if a[n][m-1] == '.':
-            possible += [solution(n, m-1, a, True, cache) + 1]
-            possible += [solution(n, m-1, a, False, cache) + 1]
-        else:
-            possible += [solution(n, m-1, a, True, cache) + 1]
-            possible += [solution(n, m-1, a, False, cache)]
-        cache[(n, m, False)] = min(possible)
-
-    return min(cache[(n, m, True)], cache[(n, m, False)])
+import os
 
 
 def solution(n, m, a):
     cache = {}
 
-    def helper(i, j, mask=None):
+    def helper(i, j, mask):
         if i == 0 and j == 0:
             if a[i][j] == '.':
                 return 0
             else:
                 return 1
+        return cache[(i, j)][mask]
 
-        if mask is not None:
-            return cache[(i, j)][mask]
-
-        last = None
-        if j > 0:
-            last = [i, j-1]
-            helper(*last)
-        elif i > 0:
-            last = (i-1, m-1)
-            helper(*last)
-
-        assert last is not None
-
-        cache[(i, j)] = []
-        for mask in range(0, 1 << m):
-            possible = []
-
-            possible += [int(a[i][j] == "#")]
-            possible[-1] += helper(last[0], last[1], mask)
-
+    for i in range(n):
+        for j in range(m):
+            last = None
             if j > 0:
-                if (mask >> j-1) & 1 == 0 and a[i][j-1] == a[i][j] == "#":
-                    possible += [helper(last[0], last[1], mask)]
-            if i > 0:
-                if (mask >> j) & 1 == 1 and a[i-1][j] == a[i][j] == "#":
-                    possible += [helper(last[0], last[1], mask)]
-            cache[(i, j)] += [min(possible)]
-        return min(cache[(i, j)])
+                last = [i, j-1]
+            elif i > 0:
+                last = (i-1, m-1)
 
-    helper(n-1, m-1)
+            if last is None:
+                continue
+            cache[(i, j)] = []
+            for mask in range(0, 1 << m):
+                possible = []
+
+                possible += [int(a[i][j] == "#")]
+                possible[-1] += helper(last[0], last[1], mask)
+
+                possible += [int(a[i][j] == "#")]
+                possible[-1] += helper(last[0], last[1], mask ^ (1 << j))
+                if j > 0:
+                    if (mask >> j) & 1 == (mask >> j-1) & 1 == 0 and a[i][j-1] == a[i][j] == "#":
+                        possible += [helper(last[0], last[1], mask)]
+                        possible += [helper(last[0], last[1], mask ^ (1 << j))]
+                if i > 0:
+                    if (mask >> j) & 1 == 1 and a[i-1][j] == a[i][j] == "#":
+                        possible += [helper(last[0], last[1], mask)]
+                cache[(i, j)] += [min(possible)]
 
     return min(cache[(n-1, m-1)])
 
 
-if __name__ == "__main__":
+def read_input_from_file(filename):
+    with open(filename, 'r') as file:
+        lines = file.readlines()
+
+    # Extract n and m from the first line
+    n, m = map(int, lines[0].split())
+
+    # Extract the 2D array 'a' from the rest of the lines
+    a = [line.strip() for line in lines[1:]]
+
+    return n, m, a
+
+
+def read_output_from_file(filename):
+    with open(filename, 'r') as file:
+        output = file.read().strip()
+
+    return int(output)
+
+
+def check_solution(input_file, output_file):
+    n, m, a = read_input_from_file(input_file)
+    if (n * m * 1 << m) > 10000000:
+        return True
+    expected_output = read_output_from_file(output_file)
+
+    # Compare the expected output with your solution
+    output = solution(n, m, a)
+    print(input_file, output, expected_output)
+    return output == expected_output
+
+
+def read_input_from_user():
+    n, m = map(int, input().split())
+
+    a = [input().strip() for _ in range(n)]
+
+    return n, m, a
+
+
+def main():
+    n, m, a = read_input_from_user()
+    print(solution(n, m, a))
+
+
+def fileTest():
+    folder_path = "test/"
+
+    file_list = os.listdir(folder_path)
+
+    input = []
+    for file in file_list:
+        if "in" in file:
+            input.append([os.path.join(folder_path, file), os.path.join(
+                folder_path, file.replace("in", "out"))])
+
+    for input_file, output_file in input:
+        is_solution_correct = check_solution(input_file, output_file)
+        print(f"{input_file}: {'Correct' if is_solution_correct else 'Incorrect'}")
+
+
+def test():
+    inf = r"test/selotejp.dummy.in.3"
+    outf = inf.replace("in", "out")
+    input = read_input_from_file(inf)
+    output = read_output_from_file(outf)
+    print("Test dummy is", output, solution(*input))
+
+    n = 4
+    m = 3
+    a = ["###",
+         "#.#",
+         "##.",
+         ".#.",]
+    print("Test 2 is", 4 == solution(n, m, a))
     n = 4
     m = 3
     a = ["...",
@@ -200,3 +176,9 @@ if __name__ == "__main__":
          ".#.",
          ".#.",]
     print("Test 2 is", 3 == solution(n, m, a))
+
+
+if __name__ == "__main__":
+    # main()
+    test()
+    fileTest()
