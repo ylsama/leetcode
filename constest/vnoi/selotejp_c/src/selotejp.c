@@ -72,16 +72,6 @@ int solution(int n, int m, char a[MAX_N][MAX_M]) {
     return minvalue;
 }
 
-int inputprint(int n, int m, char a[MAX_N][MAX_M]){
-    printf("%d %d\n", n, m);
-    for (int i = 0; i<n; i++) {
-        for (int j = 0; j < m; j++)
-            printf("%c", a[i][j]);
-        printf("\n");
-    }
-    return 0;
-}
-
 int main() {
     int n, m;
     scanf("%d %d\n", &n, &m);
