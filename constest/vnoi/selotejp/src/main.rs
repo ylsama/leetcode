@@ -1,12 +1,6 @@
-use std::{collections::HashMap, io};
+use std::io;
 
-fn helper(
-    i: usize,
-    j: usize,
-    mask: usize,
-    a: &Vec<String>,
-    cache: &HashMap<(usize, usize), Vec<i32>>,
-) -> i32 {
+fn helper(i: usize, j: usize, mask: usize, a: &Vec<String>, cache: &Vec<Vec<Vec<i32>>>) -> i32 {
     if i == 0 && j == 0 {
         if &a[i][j..=j] == "." {
             return 0;
@@ -14,18 +8,17 @@ fn helper(
             return 1;
         }
     }
-    cache.get(&(i, j)).unwrap()[mask as usize]
+    cache[i][j][mask]
 }
 
 fn solution(n: usize, m: usize, a: &Vec<String>) -> i32 {
-    let mut cache: HashMap<(usize, usize), Vec<i32>> = HashMap::new();
+    let mut cache = vec![vec![vec![0; 1 << m]; m]; n];
     for i in 0..n {
         for j in 0..m {
             if i == 0 && j == 0 {
                 continue;
             }
             let last: (usize, usize) = if j > 0 { (i, j - 1) } else { (i - 1, m - 1) };
-            cache.entry((i,j)).or_default();
             for mask in 0..(1 << m) {
                 let mut possible = vec![];
                 possible.push(
@@ -50,15 +43,12 @@ fn solution(n: usize, m: usize, a: &Vec<String>) -> i32 {
                     possible.push(helper(last.0, last.1, mask, &a, &cache));
                 }
 
-                cache
-                    .get_mut(&(i, j))
-                    .unwrap()
-                    .push(*possible.iter().min().unwrap());
+                cache[i][j][mask] = *possible.iter().min().unwrap();
             }
         }
     }
 
-    *cache.get(&(n - 1, m - 1)).unwrap().iter().min().unwrap()
+    *cache[n - 1][m - 1].iter().min().unwrap()
 }
 
 fn main() {
