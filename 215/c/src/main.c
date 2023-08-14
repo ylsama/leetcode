@@ -56,6 +56,7 @@ void quicksort(int *nums, int low, int high) {
 int findKthLargest(int *nums, int numsSize, int k) {
   printNums(nums, numsSize, k);
   quicksort(nums, 0, numsSize - 1);
+  // return quickSellect(nums, 0, numsSize - 1, numsSize - k);
   printNums(nums, numsSize, k);
   return nums[numsSize - k];
 }
