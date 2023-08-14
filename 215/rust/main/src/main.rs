@@ -1,3 +1,42 @@
+struct Solution;
+
+impl Solution {
+    fn partition(nums: &mut [i32], low: usize, high: usize) -> usize {
+        let pivot = nums[high];
+        let mut i = low as isize - 1;
+
+        for j in low..high {
+            if nums[j] <= pivot {
+                i += 1;
+                nums.swap(i as usize, j);
+            }
+        }
+        nums.swap((i + 1) as usize, high);
+        (i + 1) as usize
+    }
+
+    fn quick_select(nums: &mut [i32], low: usize, high: usize, pos: usize) -> i32 {
+        if low < high {
+            let pivot_index = Solution::partition(nums, low, high);
+            if pivot_index == pos {
+                return nums[pivot_index];
+            } else if pivot_index > pos {
+                return Solution::quick_select(nums, low, pivot_index - 1, pos);
+            } else {
+                return Solution::quick_select(nums, pivot_index + 1, high, pos);
+            }
+        } else if low == pos {
+            return nums[low];
+        }
+        -1
+    }
+
+    pub fn find_kth_largest(nums: Vec<i32>, k: i32) -> i32 {
+        let mut nums_mut = nums.to_vec();
+        Solution::quick_select(&mut nums_mut, 0, nums.len() - 1, nums.len() - k as usize)
+    }
+}
+
 fn partition(nums: &mut [i32], low: usize, high: usize) -> usize {
     let pivot = nums[high];
     let mut i = low as isize - 1;
@@ -42,7 +81,9 @@ fn main() {
     numbers[3] = 122;
     numbers[4] = 2;
 
+    let res = Solution::find_kth_largest(numbers.clone(), 3);
+    println!("{}", res);
+
     let res = find_kth_largest(&mut numbers, 3);
     println!("{}", res);
 }
-
