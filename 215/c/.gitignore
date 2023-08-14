@@ -1,0 +1,14 @@
+# Ignore build artifacts
+*.o
+*.exe
+myprogram
+
+# Ignore the build directory
+/build
+
+# Ignore editor-specific temporary files
+*~
+*.swp
+
+# Ignore macOS-specific files
+.DS_Store
