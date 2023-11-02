@@ -1,15 +1,15 @@
 """
 Ref https://oj.vnoi.info/problem/coci2021_r3_selotejp
-Cho 1 mang n x m
+Cho 1 mảng n x m với các ký tự `#` và `.`
 
-Examlpe: n = 3, m = 4
+Ví dụ: n = 3, m = 4
 #.##
 ####
 #.##
 
 
-Tinh so bang dinh can de phu toan bo so o #
-Bang dinh dan doc | hoac dan ngang --- co the noi dai den o ke tiep
+Tính số băng dính cần để phủ toàn bộ số ô #
+Băng dính dán dọc | hoặc dán ngang --- có thể nối dài đến ô kế tiếp
 
 Example result: 4
 """
